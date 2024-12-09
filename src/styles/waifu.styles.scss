@@ -1,0 +1,60 @@
+.card-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.images-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: start;
+}
+
+.image-container {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 250px;
+  height: 400px;
+}
+
+.image-delete {
+  position: absolute !important;
+  top: 5px;
+  right: 5px;
+  z-index: 3;
+}
+
+.image-icon {
+  position: absolute !important;
+  padding: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 30px;
+  background-color: #0005;
+  z-index: 1;
+}
+
+.image-input {
+  position: absolute !important;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+}
+
+.center-element {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: calc(100vh - 140px);
+}
+
+.hide-element {
+  display: none !important;
+}

@@ -1,0 +1,6 @@
+export interface WaifuType {
+  id: number;
+  name: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
