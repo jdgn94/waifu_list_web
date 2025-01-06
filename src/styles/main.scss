@@ -1,1 +1,19 @@
 @import "./waifu.styles.scss";
+
+.mobile-menu {
+  display: flex !important;
+  @media screen and (min-width: 1101px) {
+    display: none !important;
+  }
+}
+
+.desktop-menu {
+  display: flex !important;
+  @media screen and (max-width: 1100px) {
+    display: none !important;
+  }
+}
+
+.floating-button {
+  top: 70vh;
+}
