@@ -6,10 +6,10 @@
   >
     <v-overlay opacity=".06" scrim="primary" />
     <ImageRender :image="data!.publicUrl" />
-    <h3>
+    <h3 class="pl-2 pr-2">
       {{ data!.waifu.name }}
     </h3>
-    <h4 style="overflow: hidden">{{ data!.waifu.franchise.name }}</h4>
+    <h4 class="pl-2 pr-2">{{ data!.waifu.franchise.name }}</h4>
   </v-card>
 </template>
 

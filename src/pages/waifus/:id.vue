@@ -3,16 +3,19 @@
     <v-text-field
       v-model="waifu.name"
       label="Name"
+      :readonly="sessionStore.token == null"
       type="text"
     />
     <v-text-field
       v-model="waifu.nickname"
       label="Nickname"
+      :readonly="sessionStore.token == null"
       type="text"
     />
     <v-text-field
       v-model="waifu.age"
       label="Age"
+      :readonly="sessionStore.token == null"
       type="number"
     />
     <v-autocomplete
@@ -21,6 +24,7 @@
       item-value="id"
       :items="franchises"
       label="Franchise"
+      :readonly="sessionStore.token == null"
     />
     <v-autocomplete
       v-model="waifu.typeId"
@@ -28,6 +32,7 @@
       item-value="id"
       :items="waifuTypes"
       label="Type"
+      :readonly="sessionStore.token == null"
     />
 
     <!-- Images -->
@@ -47,8 +52,9 @@
             icon="mdi-close"
             @click="deleteImage(index)"
           />
-          <v-icon class="image-icon" icon="mdi-image" />
+          <v-icon v-if="sessionStore.token !== null" class="image-icon" icon="mdi-image" />
           <div
+            v-if="sessionStore.token !== null"
             v-ripple
             class="image-input"
             @click="selectImage(index)"
@@ -65,15 +71,17 @@
           v-model="waifuImage.imageFile"
           accept="image/png, image/jpeg, image/bmp"
           class="hide-element"
+          :readonly="sessionStore.token == null"
           :rules="fileRules"
           show-size
         />
         <v-autocomplete
-          v-model="waifuImage.ImageTypeId"
+          v-model="waifuImage.imageTypeId"
           item-title="name"
           item-value="id"
           :items="imageTypes"
           label="Type"
+          :readonly="sessionStore.token == null"
         >
           <template #selection="{ item }">
             {{ (item.raw.icon ?? '') + ' ' + item.raw.name }}
@@ -91,6 +99,7 @@
           item-value="id"
           :items="waifuRarities"
           label="Rarity"
+          :readonly="sessionStore.token == null"
         >
           <template #selection="{ item }">
             {{ (item.raw.icon ?? '') + ' ' + item.raw.name }}
@@ -105,16 +114,25 @@
         <v-text-field
           v-model="waifuImage.points"
           label="Points"
+          :readonly="sessionStore.token == null"
           type="number"
         />
       </v-card>
-      <v-btn class="my-2 mx-2" height="auto" width="250" @click="addImage">
+      <v-btn
+        v-if="sessionStore.token !== null"
+        class="my-2 mx-2"
+        height="auto"
+        min-height="644"
+        width="250"
+        @click="addImage"
+      >
         <v-icon>mdi-plus</v-icon>
         <span>Add Image</span>
       </v-btn>
     </div>
 
     <v-btn
+      v-if="sessionStore.token !== null"
       class="mt-5"
       color="primary"
       :loading="sendInfo"
@@ -145,6 +163,9 @@
   import { WaifuRarity } from '@/interfaces/waifu_rarity'
   import { WaifuImage } from '@/interfaces/waifu_image'
   import { VFileInput } from 'vuetify/components'
+  import { useSessionStore } from '@/stores/session'
+  import api from '@/utils/axios.utils'
+
   const loading = ref(false)
   const id = ref(0)
   const franchises = ref([] as Franchise[])
@@ -154,12 +175,12 @@
   const waifuOriginal = ref({} as Waifu)
   const waifu = ref({} as Waifu)
   const sendInfo = ref(false)
-  const baseUrl = import.meta.env.VITE_BASE_URL_API
+  const sessionStore = useSessionStore()
   const fileRules = ref([
-        (value: File[]) => {
-          return !value || !value.length || value[0].size < 15000000 || 'Image size should be less than 15 MB!'
-        },
-      ])
+    (value: File[]) => {
+      return !value || !value.length || value[0].size < 15000000 || 'Image size should be less than 15 MB!'
+    },
+  ])
 
   onMounted(() => {
     id.value = parseInt(router.currentRoute.value.params.id)
@@ -172,90 +193,49 @@
   })
 
   const findFranchises = async () => {
-    const url = `${baseUrl}/franchises`
-    const response = await fetch(
-      url,
-      {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      }
-    )
-    if (response.ok) {
-      const values = await response.json()
-      franchises.value = values.data as Franchise[]
+    const url = `/franchises`
+    const { status, data } = await api.get(url)
+
+    if (status === 200) {
+      franchises.value = data as Franchise[]
     }
   }
 
   const findWaifuTypes = async () => {
-    const url = `${baseUrl}/waifu_types`
-    const response = await fetch(
-      url,
-      {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      }
-    )
-    if (response.ok) {
-      const values = await response.json()
-      waifuTypes.value = values.data as WaifuType[]
+    const url = `/waifu_types`
+    const { status, data } = await api.get(url)
+
+    if (status === 200) {
+      waifuTypes.value = data as WaifuType[]
     }
   }
 
   const findWaifuRarities = async () => {
-    const url = `${baseUrl}/waifu_rarities`
-    const response = await fetch(
-      url,
-      {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      }
-    )
-    if (response.ok) {
-      const values = await response.json()
-      waifuRarities.value = values.data as WaifuRarity[]
+    const url = `/waifu_rarities`
+    const { status, data } = await api.get(url)
+
+    if (status === 200) {
+      waifuRarities.value = data as WaifuRarity[]
     }
   }
 
   const findImageTypes = async () => {
-    const url = `${baseUrl}/image_types?specials=false`
-    const response = await fetch(
-      url,
-      {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      }
-    )
-    if (response.ok) {
-      const values = await response.json()
-      imageTypes.value = values.data as ImageType[]
+    const url = `/image_types?specials=false`
+    const { status, data } = await api.get(url)
+
+    if (status === 200) {
+      imageTypes.value = data as ImageType[]
     }
   }
 
   const findWaifu = async () => {
     loading.value = true
-    const url = `${baseUrl}/waifus/${id.value}`
-    const response = await fetch(
-      url,
-      {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      }
-    )
+    const url = `/waifus/${id.value}`
+    const { status, data } = await api.get(url)
 
-    if (response.ok) {
-      const values = await response.json()
-      waifuOriginal.value = values.data as Waifu
-      waifu.value = values.data as Waifu
+    if (status === 200) {
+      waifuOriginal.value = data as Waifu
+      waifu.value = data as Waifu
     }
     loading.value = false
   }
@@ -266,7 +246,7 @@
       publicId: (0).toString(),
       publicUrl: '',
       waifuId: id.value,
-      ImageTypeId: 1,
+      imageTypeId: 1,
       rarityId: 1,
       points: 3,
       createdAt: new Date(),
@@ -286,23 +266,32 @@
 
   const updateWaifu = async () => {
     sendInfo.value = true
-    const url = `${baseUrl}/waifus/${id.value}`
-    const response = await fetch(
-      url,
-      {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(waifu.value),
+    const url = `/waifus/${id.value}`
+    const formData = new FormData()
+    formData.append('name', waifu.value.name)
+    formData.append('nickname', waifu.value.nickname ?? '')
+    formData.append('age', waifu.value.age?.toString() ?? '0')
+    formData.append('franchise_id', waifu.value.franchiseId!.toString())
+    formData.append('type_id', waifu.value.typeId!.toString())
+    const images = waifu.value.waifuImages.map(waifuImage => {
+      formData.append(waifuImage.imageTypeId.toString(), waifuImage.imageFile!)
+      return {
+        id: waifuImage.id,
+        image_type_id: waifuImage.imageTypeId,
+        rarity_id: waifuImage.rarityId,
+        points: waifuImage.points,
       }
-    )
+    })
+    formData.append('images', JSON.stringify(images))
+    console.log(formData)
+    const { status, data } = await api.put(url, formData)
+
     sendInfo.value = false
-    if (response.ok) {
+    if (status === 200) {
       console.log('updated')
       router.back()
     } else {
-      console.error(response)
+      console.error(data)
     }
   }
 </script>

@@ -6,7 +6,7 @@ export interface WaifuImage {
   waifuId: number;
   rarityId: number;
   userId?: string;
-  ImageTypeId: number;
+  imageTypeId: number;
   points: number;
   publicId: string;
   publicUrl: string;

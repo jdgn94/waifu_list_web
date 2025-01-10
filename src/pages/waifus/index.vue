@@ -22,6 +22,7 @@
       />
     </div>
     <v-fab
+      v-if="sessionStore.token"
       absolute
       class="floating-button"
       color="primary"
@@ -30,6 +31,7 @@
       position="fixed"
       prepend-icon="mdi-plus"
       size="64"
+      to="/waifus/new"
       z-index="10"
     />
     <div class="card-container">
@@ -63,6 +65,8 @@
   import { WaifuList } from '@/interfaces/waifu'
   import WaifuCard from '@/components/WaifuCard.vue'
   import { Franchise } from '@/interfaces/franchise'
+  import { useSessionStore } from '@/stores/session'
+  import api from '@/utils/axios.utils'
   const waifus = ref([] as WaifuList[])
   const franchises = ref([] as Franchise[])
   const page = ref(parseInt(router.currentRoute.value.query.page?.toString() ?? '1'))
@@ -73,6 +77,7 @@
   const loading = ref(false)
   const timeout = ref(null as any)
   const baseUrl = import.meta.env.VITE_BASE_URL_API
+  const sessionStore = useSessionStore()
 
   interface GetWaifus {
     page: number;
@@ -121,38 +126,20 @@
   // functions
   const getFranchises = async () => {
     const url = `${baseUrl}/franchises`
-    const response = await fetch(
-      url,
-      {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      }
-    )
-    if (response.ok) {
-      const values = await response.json()
-      franchises.value = values.data as Franchise[]
+    const { status, data } = await api.get(url)
+    if (status === 200) {
+      franchises.value = data as Franchise[]
     }
   }
 
   const getWaifus = async (params: GetWaifus) => {
-    const newLocal = `${baseUrl}/waifus?page=${params.page ?? 1}&name=${params.name ?? ''}&franchise=${params.franchise ?? ''}`
-    const response = await fetch(
-      newLocal,
-      {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      }
-    )
+    const url = `/waifus?page=${params.page ?? 1}&name=${params.name ?? ''}&franchise=${params.franchise ?? ''}`
+    const { status, data } = await api.get(url)
 
-    if (response.ok) {
+    if (status === 200) {
       window.scrollTo(0, 0)
-      const values = await response.json()
-      waifus.value = values.data.waifus as WaifuList[]
-      totalPages.value = values.data.total_pages
+      waifus.value = data.waifus as WaifuList[]
+      totalPages.value = data.total_pages
     }
     console.log(waifus.value)
     loading.value = false

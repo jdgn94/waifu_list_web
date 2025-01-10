@@ -256,7 +256,7 @@ const typeMap: any = {
       { json: "waifuId", js: "waifuId", typ: 0 },
       { json: "rarityId", js: "rarityId", typ: 0 },
       { json: "userId", js: "userId", typ: null },
-      { json: "ImageTypeId", js: "ImageTypeId", typ: 0 },
+      { json: "imageTypeId", js: "imageTypeId", typ: 0 },
       { json: "points", js: "points", typ: 0 },
       { json: "publicId", js: "publicId", typ: "" },
       { json: "publicUrl", js: "publicUrl", typ: "" },

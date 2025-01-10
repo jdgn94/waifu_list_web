@@ -16,4 +16,10 @@
 
 .floating-button {
   top: 70vh;
+  @media screen and (max-width: 1000px) {
+    right: 60px;
+  }
+  @media screen and (max-width: 600px) {
+    top: 65vh;
+  }
 }
