@@ -11,7 +11,7 @@
     <v-btn class="desktop-menu" to="/waifus">
       <span>Waifus</span>
     </v-btn>
-    <v-btn class="desktop-menu">
+    <v-btn class="desktop-menu" to="/franchises">
       <span>Franchises</span>
     </v-btn>
     <v-btn class="desktop-menu">
@@ -48,7 +48,7 @@
         <v-list-item to="/waifus">
           <span>Waifus</span>
         </v-list-item>
-        <v-list-item>
+        <v-list-item to="/franchises">
           <span>Franchises</span>
         </v-list-item>
         <v-list-item>
@@ -105,7 +105,7 @@
 
 <script lang="ts" setup>
   import { useSessionStore } from '@/stores/session'
-  import api, { setHeaderAuth, removeHeaderAuth } from '@/utils/axios.utils'
+  import api, { removeHeaderAuth, setHeaderAuth } from '@/utils/axios.utils'
 
   const token = ref(null) as Ref<string | null>
   const menu = ref(false)
@@ -136,9 +136,8 @@
 
     if (response.status === 200) {
       const values = await response.data
-      console.log(values)
-      localStorage.setItem('token', values.data.token)
-      token.value = values.data.token
+      localStorage.setItem('token', values.token)
+      token.value = values.token
       setHeaderAuth(token.value!)
       sessionStore.create(
         values.user.username,
@@ -163,9 +162,7 @@
     setHeaderAuth(token.value!)
     const response = await api.get('/session')
     if (response.status === 200) {
-      console.log(response)
       const values = response.data
-      console.log(values)
       sessionStore.create(
         values.user.username,
         values.user.nickname,

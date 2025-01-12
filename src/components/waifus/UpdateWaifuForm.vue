@@ -1,28 +1,21 @@
 <template>
   <v-text-field
-    v-model="name"
+    v-model="waifuLocal.name"
     label="Name"
     type="text"
   />
   <v-text-field
-    v-model="nickname"
+    v-model="waifuLocal.nickname"
     label="Nickname"
     type="text"
   />
   <v-text-field
-    v-model="age"
+    v-model="waifuLocal.age"
     label="Age"
     type="number"
   />
   <v-autocomplete
-    v-model="franchiseId"
-    item-title="name"
-    item-value="id"
-    :items="franchises"
-    label="Franchise"
-  />
-  <v-autocomplete
-    v-model="typeId"
+    v-model="waifuLocal.typeId"
     item-title="name"
     item-value="id"
     :items="waifuTypes"
@@ -32,7 +25,7 @@
   <!-- Images -->
   <div class="images-container">
     <v-card
-      v-for="(waifuImage, index) in waifuImages"
+      v-for="(waifuImage, index) in waifuLocal.waifuImages"
       :key="waifuImage.id"
       class="my-2 mx-2"
       style="max-width: 250px;"
@@ -124,63 +117,47 @@
     color="primary"
     :loading="sendInfo"
     prepend-icon="mdi-content-save"
-    text="Create"
+    text="Save"
     width="100%"
-    @click="createWaifu"
+    @click="updateWaifu"
   />
 </template>
 
-<script lang="ts" setup>
-  import router from '@/router'
-  import ImageRender from '@/components/ImageRender.vue'
-  import { Franchise } from '@/interfaces/franchise'
-  import { WaifuType } from '@/interfaces/waifu_type'
+<script setup lang="ts">
   import { ImageType } from '@/interfaces/image_type'
-  import { WaifuRarity } from '@/interfaces/waifu_rarity'
+  import { Waifu } from '@/interfaces/waifu'
   import { WaifuImage } from '@/interfaces/waifu_image'
-  import { VFileInput } from 'vuetify/components'
-  import { useSessionStore } from '@/stores/session'
+  import { WaifuRarity } from '@/interfaces/waifu_rarity'
+  import { WaifuType } from '@/interfaces/waifu_type'
+  import router from '@/router'
   import api from '@/utils/axios.utils'
+  import { VFileInput } from 'vuetify/components'
 
-  const id = ref(0)
-  const franchises = ref([] as Franchise[])
   const waifuTypes = ref([] as WaifuType[])
-  const imageTypes = ref([] as unknown as ImageType[])
+  const imageTypes = ref([] as ImageType[])
   const waifuRarities = ref([] as WaifuRarity[])
-  const waifuImages = ref([] as WaifuImage[])
-  const name = ref('')
-  const nickname = ref('')
-  const age = ref(null as number | null)
-  const franchiseId = ref(null as number | null)
-  const typeId = ref(null as number | null)
+  const waifuLocal = ref({} as Waifu)
   const sendInfo = ref(false)
-  const sessionStore = useSessionStore()
   const fileRules = ref([
     (value: File[]) => {
       return !value || !value.length || value[0].size < 15000000 || 'Image size should be less than 15 MB!'
     },
   ])
 
+  const p = defineProps({
+    waifu: { type: Object as () => Waifu, required: true },
+  })
+
   onMounted(() => {
-    if (sessionStore.token == null) return router.replace('/')
-    window.scrollTo(0, 0)
-    findFranchises()
+    waifuLocal.value = p.waifu
     findWaifuTypes()
     findWaifuRarities()
     findImageTypes()
   })
-
-  const findFranchises = async () => {
-    const url = `/franchises`
-    const { status, data } = await api.get(url)
-    if (status === 200) {
-      franchises.value = data as Franchise[]
-    }
-  }
-
   const findWaifuTypes = async () => {
     const url = `/waifu_types`
     const { status, data } = await api.get(url)
+
     if (status === 200) {
       waifuTypes.value = data as WaifuType[]
     }
@@ -189,6 +166,7 @@
   const findWaifuRarities = async () => {
     const url = `/waifu_rarities`
     const { status, data } = await api.get(url)
+
     if (status === 200) {
       waifuRarities.value = data as WaifuRarity[]
     }
@@ -197,9 +175,34 @@
   const findImageTypes = async () => {
     const url = `/image_types?specials=false`
     const { status, data } = await api.get(url)
+
     if (status === 200) {
       imageTypes.value = data as ImageType[]
     }
+  }
+
+  const addImage = () => {
+    const newWaifuImage: WaifuImage = {
+      id: 0,
+      publicId: (0).toString(),
+      publicUrl: '',
+      waifuId: waifuLocal.value.id,
+      imageTypeId: 1,
+      rarityId: 1,
+      points: 3,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    }
+    waifuLocal.value.waifuImages.push(newWaifuImage)
+  }
+
+  const deleteImage = (index: number) => {
+    waifuLocal.value.waifuImages.splice(index, 1)
+  }
+
+  const selectImage = async (index: number) => {
+    const input = window.document.getElementById(`imageFileIndex${index}`) as VFileInput
+    input.click()
   }
 
   const _urlImage = (waifuImage: WaifuImage) => {
@@ -212,42 +215,19 @@
     return undefined
   }
 
-  const addImage = () => {
-    const newWaifuImage: WaifuImage = {
-      id: 0,
-      publicId: '0',
-      publicUrl: '',
-      waifuId: id.value,
-      imageTypeId: 1,
-      rarityId: 1,
-      points: 3,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    }
-    waifuImages.value.push(newWaifuImage)
-  }
-
-  const deleteImage = (index: number) => {
-    waifuImages.value.splice(index, 1)
-  }
-
-  const selectImage = async (index: number) => {
-    const input = window.document.getElementById(`imageFileIndex${index}`) as VFileInput
-    input.click()
-  }
-
-  const createWaifu = async () => {
+  const updateWaifu = async () => {
     sendInfo.value = true
-    const url = `/waifus`
+    const url = `/waifus/${waifuLocal.value.id}`
     const formData = new FormData()
-    formData.append('name', name.value)
-    formData.append('nickname', nickname.value)
-    formData.append('age', age.value?.toString() ?? '0')
-    formData.append('franchise_id', franchiseId.value!.toString())
-    formData.append('type_id', typeId.value!.toString())
-    const images = waifuImages.value.map(waifuImage => {
+    formData.append('name', waifuLocal.value.name)
+    formData.append('nickname', waifuLocal.value.nickname ?? '')
+    formData.append('age', waifuLocal.value.age?.toString() ?? '0')
+    formData.append('franchise_id', waifuLocal.value.franchiseId!.toString())
+    formData.append('type_id', waifuLocal.value.typeId!.toString())
+    const images = waifuLocal.value.waifuImages.map(waifuImage => {
       formData.append(waifuImage.imageTypeId.toString(), waifuImage.imageFile!)
       return {
+        id: waifuImage.id,
         image_type_id: waifuImage.imageTypeId,
         rarity_id: waifuImage.rarityId,
         points: waifuImage.points,
@@ -255,24 +235,12 @@
     })
     formData.append('images', JSON.stringify(images))
     console.log(formData)
-    // const response = await fetch(
-    //   url,
-    //   {
-    //     method: 'POST',
-    //     headers: {
-    //       Authorization: `Bearer ${sessionStore.token}`,
-    //       'Content-Type': 'multipart/form-data;boundary=----WebKitFormBoundaryBODBNK9vWWeDNOP1',
-    //     },
-    //     body: formData,
-    //   }
-    // )
-    const { status, data, statusText } = await api.post(url, formData)
-    console.log(statusText)
-    console.log(data)
+    const { status, data } = await api.put(url, formData)
+
     sendInfo.value = false
     if (status === 200) {
       console.log('updated')
-      // router.back()
+      router.back()
     } else {
       console.error(data)
     }
