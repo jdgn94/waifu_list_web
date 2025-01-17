@@ -21,6 +21,9 @@
     :items="waifuTypes"
     label="Type"
   />
+  <FranchiseAutocomplete
+    v-model="waifuLocal.franchiseId"
+  />
 
   <!-- Images -->
   <div class="images-container">

@@ -1,5 +1,5 @@
 <template>
-  <v-card class="d-flex flex-row">
+  <v-card class="d-flex flex-row ma-3">
     <div>
       <ImageRender
         :height="400"

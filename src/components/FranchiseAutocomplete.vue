@@ -32,17 +32,21 @@
   const name = ref('')
   const franchises = ref([] as Franchise[])
   const timeout = ref(null as any)
-  const loading = ref(false)
-  defineProps({
+  const loading = ref(true)
+  const propsComponent = defineProps({
     variant: VAutocomplete.props.variant,
+    modelValue: { type: Number, default: null },
   })
 
   onMounted(() => {
-    if (id.value) {
-      getFranchiseById()
-    } else {
-      getFranchises()
-    }
+    setTimeout(() => {
+      console.log(propsComponent.modelValue)
+      if (propsComponent.modelValue) {
+        getFranchiseById()
+      } else {
+        getFranchises()
+      }
+    }, 200)
   })
 
   watch(name, (newValue, oldValue) => {
@@ -71,6 +75,7 @@
     if (status === 200) {
       franchises.value = [data] as Franchise[]
     }
+    loading.value = false
   }
 
   const filter = (item: Franchise) => {

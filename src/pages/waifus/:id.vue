@@ -1,6 +1,21 @@
 <template>
   <div v-if="waifu.name != null &&!loading && roleLevel() <= 2">
-    <UpdateWaifuForm :waifu="waifu" />
+    <v-tabs
+      v-model="tab"
+      color="primary"
+      fixed-tabs
+    >
+      <v-tab text="Edit" :value="1" />
+      <v-tab text="Info" :value="2" />
+    </v-tabs>
+    <v-tabs-window v-model="tab" class="mt-4">
+      <v-tabs-window-item :value="1">
+        <UpdateWaifuForm :waifu="waifu" />
+      </v-tabs-window-item>
+      <v-tabs-window-item :value="2">
+        <WaifuInfo :waifu="waifu" />
+      </v-tabs-window-item>
+    </v-tabs-window>
   </div>
   <div v-if="waifu.name != null && !loading && roleLevel() >= 3">
     <WaifuInfo :waifu="waifu" />
@@ -19,14 +34,13 @@
 <script lang="ts" setup>
   import router from '@/router'
   import { Waifu } from '@/interfaces/waifu'
-  import { useSessionStore } from '@/stores/session'
   import api from '@/utils/axios.utils'
   import roleLevel from '@/plugins/role_level'
 
   const loading = ref(false)
   const id = ref(parseInt(router.currentRoute.value.params.id))
   const waifu = ref({} as Waifu)
-  const sessionStore = useSessionStore()
+  const tab = ref(1)
 
   onMounted(() => {
     if (!id.value) return router.back()

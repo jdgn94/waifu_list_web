@@ -1,58 +1,21 @@
 <template>
-  <div v-if="!loading">
-    <v-text-field
-      v-model="franchise.name"
-      label="Name"
-      :readonly="sessionStore.token == null"
-    />
-    <v-text-field
-      v-model="franchise.nickname"
-      label="Nickname"
-      :readonly="sessionStore.token == null"
-    />
-    <v-text-field
-      v-model="franchise.webPage"
-      label="Web Page Reference"
-      :readonly="sessionStore.token == null"
-    />
-
-    <!-- Images -->
-    <div class="d-flex align-center justify-center">
-      <div class="image-container-franchise">
-        <v-icon v-if="sessionStore.token !== null" class="image-icon" icon="mdi-image" />
-        <span
-          v-if="sessionStore.token !== null"
-          v-ripple
-          class="image-input"
-          @click="selectImage()"
-        />
-        <ImageRender
-          :height="250"
-          :image="urlImage()"
-          :width="400"
-        />
-      </div>
-      <v-file-input
-        id="franchise-image"
-        v-model="franchise.imageFile"
-        accept="image/png, image/jpeg, image/bmp, image/webp"
-        class="hide-element"
-        :readonly="sessionStore.token == null"
-        :rules="fileRules"
-        show-size
-      />
-    </div>
-
-    <v-btn
-      v-if="sessionStore.token !== null"
-      class="mt-5"
+  <div v-if="!loading && franchise.name != null && roleLevel() <= 2">
+    <v-tabs
+      v-model="tab"
       color="primary"
-      :loading="sendInfo"
-      prepend-icon="mdi-content-save"
-      text="Save"
-      width="100%"
-      @click="updateFranchise"
-    />
+      fixed-tabs
+    >
+      <v-tab text="Edit" :value="1" />
+      <v-tab text="Info" :value="2" />
+    </v-tabs>
+    <v-tabs-window v-model="tab" class="mt-4">
+      <v-tabs-window-item :value="1">
+        <UpdateFranchiseForm :franchise="franchise" />
+      </v-tabs-window-item>
+      <v-tabs-window-item :value="2">
+        <FranchiseInfo :franchise="franchise" />
+      </v-tabs-window-item>
+    </v-tabs-window>
   </div>
   <div v-else>
     <v-progress-circular
@@ -65,20 +28,13 @@
 <script lang="ts" setup>
   import { Franchise } from '@/interfaces/franchise'
   import router from '@/router'
-  import { useSessionStore } from '@/stores/session'
   import api from '@/utils/axios.utils'
-  import { VFileInput } from 'vuetify/components'
+  import roleLevel from '@/plugins/role_level'
 
   const loading = ref(false)
   const id = ref(parseInt(router.currentRoute.value.params.id))
   const franchise = ref({} as Franchise)
-  const sendInfo = ref(false)
-  const sessionStore = useSessionStore()
-  const fileRules = ref([
-    (value: File[]) => {
-      return !value || !value.length || value[0].size < 15000000 || 'Image size should be less than 15 MB!'
-    },
-  ])
+  const tab = ref(1)
 
   onMounted(() => {
     if (!id.value) return router.back()
@@ -95,36 +51,5 @@
       franchise.value = data as Franchise
     }
     loading.value = false
-  }
-
-  const selectImage = () => {
-    const input = window.document.getElementById(`franchise-image`) as VFileInput
-    input.click()
-  }
-
-  const urlImage = () => {
-    if (franchise.value.imageFile) {
-      return URL.createObjectURL(franchise.value.imageFile)
-    }
-    if (franchise.value.publicUrl) {
-      return franchise.value.publicUrl
-    }
-    return undefined
-  }
-
-  const updateFranchise = async () => {
-    sendInfo.value = true
-    const formData = new FormData()
-    formData.append('name', franchise.value.name)
-    formData.append('nickname', franchise.value.nickname ?? '')
-    formData.append('web_page', franchise.value.webPage ?? '')
-    if (franchise.value.imageFile) {
-      formData.append('1', franchise.value.imageFile)
-    }
-    const { status } = await api.put(`/franchises/${id.value}`, formData)
-    if (status === 200) {
-      // router.push('/franchises')
-    }
-    sendInfo.value = false
   }
 </script>
