@@ -2,7 +2,7 @@
   <div v-if="waifu.name != null &&!loading && roleLevel() <= 2">
     <v-tabs
       v-model="tab"
-      color="primary"
+      color="secondary"
       fixed-tabs
     >
       <v-tab text="Edit" :value="1" />
@@ -23,12 +23,7 @@
   <div v-if="waifu.name == null && !loading">
     <h2>Waifu not found</h2>
   </div>
-  <div v-if="loading" class="center-element">
-    <v-progress-circular
-      color="primary"
-      indeterminate
-    />
-  </div>
+  <Loading v-if="loading" />
 </template>
 
 <script lang="ts" setup>

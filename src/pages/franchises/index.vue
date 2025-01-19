@@ -15,7 +15,7 @@
       v-if="sessionStore.token"
       absolute
       class="floating-button"
-      color="primary"
+      color="secondary"
       extended
       location="end"
       position="fixed"
@@ -67,7 +67,6 @@
 </template>
 
 <script lang="ts" setup>
-  import FranchiseCard from '@/components/FranchiseCard.vue'
   import { Franchise } from '@/interfaces/franchise'
   import router from '@/router'
   import { useSessionStore } from '@/stores/session'

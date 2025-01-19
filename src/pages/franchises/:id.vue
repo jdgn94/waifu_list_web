@@ -2,7 +2,7 @@
   <div v-if="!loading && franchise.name != null && roleLevel() <= 2">
     <v-tabs
       v-model="tab"
-      color="primary"
+      color="secondary"
       fixed-tabs
     >
       <v-tab text="Edit" :value="1" />
@@ -17,12 +17,10 @@
       </v-tabs-window-item>
     </v-tabs-window>
   </div>
-  <div v-else>
-    <v-progress-circular
-      color="primary"
-      indeterminate
-    />
+  <div v-if="!loading && franchise.name != null && roleLevel() >= 3">
+    <FranchiseInfo :franchise="franchise" />
   </div>
+  <Loading v-if="loading" />
 </template>
 
 <script lang="ts" setup>

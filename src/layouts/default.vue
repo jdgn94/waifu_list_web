@@ -1,5 +1,6 @@
 <template>
-  <v-app>
+  <v-app class="relative">
+    <ButtonChangeTheme />
     <AppHeader />
     <v-container>
       <v-main>
@@ -11,5 +12,4 @@
 </template>
 
 <script lang="ts" setup>
-//
 </script>

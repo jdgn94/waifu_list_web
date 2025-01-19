@@ -14,12 +14,8 @@
     label="Age"
     type="number"
   />
-  <v-autocomplete
+  <FranchiseAutocomplete
     v-model="franchiseId"
-    item-title="name"
-    item-value="id"
-    :items="franchises"
-    label="Franchise"
   />
   <v-autocomplete
     v-model="typeId"
@@ -46,7 +42,7 @@
           icon="mdi-close"
           @click="deleteImage(index)"
         />
-        <v-icon class="image-icon" icon="mdi-image" />
+        <v-icon :class="currentTheme == 'dark' ? 'image-icon-dark' : 'image-icon-light'" icon="mdi-image" />
         <div
           v-ripple
           class="image-input"
@@ -132,7 +128,6 @@
 
 <script lang="ts" setup>
   import router from '@/router'
-  import ImageRender from '@/components/ImageRender.vue'
   import { Franchise } from '@/interfaces/franchise'
   import { WaifuType } from '@/interfaces/waifu_type'
   import { ImageType } from '@/interfaces/image_type'
@@ -141,7 +136,10 @@
   import { VFileInput } from 'vuetify/components'
   import { useSessionStore } from '@/stores/session'
   import api from '@/utils/axios.utils'
+  import { useTheme } from 'vuetify'
 
+  const theme = useTheme()
+  const currentTheme = theme.global.name
   const id = ref(0)
   const franchises = ref([] as Franchise[])
   const waifuTypes = ref([] as WaifuType[])
@@ -150,9 +148,9 @@
   const waifuImages = ref([] as WaifuImage[])
   const name = ref('')
   const nickname = ref('')
-  const age = ref(null as number | null)
-  const franchiseId = ref(null as number | null)
-  const typeId = ref(null as number | null)
+  const age = ref(undefined as number | undefined)
+  const franchiseId = ref(undefined as number | undefined)
+  const typeId = ref(undefined as number | undefined)
   const sendInfo = ref(false)
   const sessionStore = useSessionStore()
   const fileRules = ref([

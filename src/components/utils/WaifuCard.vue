@@ -9,14 +9,15 @@
     <h3 class="pl-2 pr-2">
       {{ data!.waifu.name }}
     </h3>
-    <h4 class="pl-2 pr-2">{{ data!.waifu.franchise.name }}</h4>
+    <h4 v-if="!disableFranchise" class="pl-2 pr-2">{{ data!.waifu.franchise.name }}</h4>
   </v-card>
 </template>
 
 <script setup lang="ts">
   import { WaifuList } from '@/interfaces/waifu'
-  import ImageRender from '@/components/ImageRender.vue'
+
   defineProps({
     data: Object as () => WaifuList,
+    disableFranchise: { type: Boolean, default: false },
   })
 </script>

@@ -16,7 +16,6 @@
 </template>
 
 <script setup lang="ts">
-  import ImageRender from '@/components/ImageRender.vue'
   import { Franchise } from '@/interfaces/franchise'
   defineProps({
     data: Object as () => Franchise,

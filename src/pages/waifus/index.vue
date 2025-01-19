@@ -10,13 +10,18 @@
         variant="solo"
       />
       <v-divider vertical />
-      <FranchiseAutocomplete v-model="franchiseId" clearable hide-details variant="solo" />
+      <FranchiseAutocomplete
+        v-model="franchiseId!"
+        clearable
+        hide-details
+        variant="solo"
+      />
     </div>
     <v-fab
       v-if="sessionStore.token"
       absolute
       class="floating-button"
-      color="primary"
+      color="secondary"
       extended
       location="end"
       position="fixed"
@@ -54,7 +59,6 @@
 <script lang="ts" setup>
   import router from '@/router'
   import { WaifuList } from '@/interfaces/waifu'
-  import WaifuCard from '@/components/WaifuCard.vue'
   import { useSessionStore } from '@/stores/session'
   import api from '@/utils/axios.utils'
 

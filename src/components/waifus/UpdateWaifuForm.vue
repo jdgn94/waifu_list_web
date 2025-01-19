@@ -42,7 +42,7 @@
           icon="mdi-close"
           @click="deleteImage(index)"
         />
-        <v-icon class="image-icon" icon="mdi-image" />
+        <v-icon :class="currentTheme == 'dark' ? 'image-icon-dark' : 'image-icon-light'" icon="mdi-image" />
         <div
           v-ripple
           class="image-input"
@@ -134,8 +134,11 @@
   import { WaifuType } from '@/interfaces/waifu_type'
   import router from '@/router'
   import api from '@/utils/axios.utils'
+  import { useTheme } from 'vuetify'
   import { VFileInput } from 'vuetify/components'
 
+  const theme = useTheme()
+  const currentTheme = theme.global.name
   const waifuTypes = ref([] as WaifuType[])
   const imageTypes = ref([] as ImageType[])
   const waifuRarities = ref([] as WaifuRarity[])
