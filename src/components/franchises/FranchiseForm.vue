@@ -1,14 +1,14 @@
 <template>
   <v-text-field
-    v-model="franchise!.name"
+    v-model="name"
     label="Name"
   />
   <v-text-field
-    v-model="franchise!.nickname"
+    v-model="nickname"
     label="Nickname"
   />
   <v-text-field
-    v-model="franchise!.webPage"
+    v-model="webPage"
     label="Web Page Reference"
   />
 
@@ -29,7 +29,7 @@
     </div>
     <v-file-input
       id="franchise-image"
-      v-model="franchise!.imageFile"
+      v-model="imageFile"
       accept="image/png, image/jpeg, image/bmp, image/webp"
       class="hide-element"
       :rules="fileRules"
@@ -42,7 +42,7 @@
     color="primary"
     :loading="sendInfo"
     prepend-icon="mdi-content-save"
-    text="Save"
+    :text="edit ? 'Update' : 'Create'"
     width="100%"
     @click="updateFranchise"
   />
@@ -54,14 +54,30 @@
   import api from '@/utils/axios.utils'
   import { VFileInput } from 'vuetify/components'
 
+  const name = ref('')
+  const nickname = ref('')
+  const webPage = ref('')
+  const publicUrl = ref('')
+  const imageFile = ref(null as File | null)
   const sendInfo = ref(false)
+  const edit = ref(false)
   const fileRules = ref([
     (value: File[]) => {
       return !value || !value.length || value[0].size < 15000000 || 'Image size should be less than 15 MB!'
     },
   ])
   const props = defineProps({
-    franchise: { type: Object as () => Franchise, require: true },
+    franchise: { type: Object as () => Franchise, require: false },
+  })
+
+  onMounted(() => {
+    if (props.franchise) {
+      edit.value = true
+      name.value = props.franchise.name
+      nickname.value = props.franchise.nickname ?? ''
+      webPage.value = props.franchise.webPage ?? ''
+      publicUrl.value = props.franchise.publicUrl ?? ''
+    }
   })
 
   const selectImage = () => {
@@ -70,11 +86,11 @@
   }
 
   const urlImage = () => {
-    if (props.franchise!.imageFile) {
-      return URL.createObjectURL(props.franchise!.imageFile)
+    if (imageFile.value) {
+      return URL.createObjectURL(imageFile.value)
     }
-    if (props.franchise!.publicUrl) {
-      return props.franchise!.publicUrl
+    if (publicUrl.value) {
+      return publicUrl.value
     }
     return undefined
   }
@@ -82,13 +98,13 @@
   const updateFranchise = async () => {
     sendInfo.value = true
     const formData = new FormData()
-    formData.append('name', props.franchise!.name)
-    formData.append('nickname', props.franchise!.nickname ?? '')
-    formData.append('web_page', props.franchise!.webPage ?? '')
-    if (props.franchise!.imageFile) {
-      formData.append('1', props.franchise!.imageFile)
+    formData.append('name', name.value)
+    formData.append('nickname', nickname.value)
+    formData.append('web_page', webPage.value)
+    if (imageFile.value) {
+      formData.append('1', imageFile.value)
     }
-    const { status } = await api.put(`/franchises/${props.franchise!.id}`, formData)
+    const { status } = await api.put(`/franchises/${edit.value ? props.franchise!.id : ''}`, formData)
     if (status === 200) {
       router.push('/franchises')
     }

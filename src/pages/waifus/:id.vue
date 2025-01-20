@@ -10,7 +10,7 @@
     </v-tabs>
     <v-tabs-window v-model="tab" class="mt-4">
       <v-tabs-window-item :value="1">
-        <UpdateWaifuForm :waifu="waifu" />
+        <WaifuForm :waifu="waifu" />
       </v-tabs-window-item>
       <v-tabs-window-item :value="2">
         <WaifuInfo :waifu="waifu" />

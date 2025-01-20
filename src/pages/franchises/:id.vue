@@ -10,7 +10,7 @@
     </v-tabs>
     <v-tabs-window v-model="tab" class="mt-4">
       <v-tabs-window-item :value="1">
-        <UpdateFranchiseForm :franchise="franchise" />
+        <FranchiseForm :franchise="franchise" />
       </v-tabs-window-item>
       <v-tabs-window-item :value="2">
         <FranchiseInfo :franchise="franchise" />

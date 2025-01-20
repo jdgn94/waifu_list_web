@@ -13,6 +13,7 @@ declare module 'vue' {
     CardLoading: typeof import('./components/utils/CardLoading.vue')['default']
     FranchiseAutocomplete: typeof import('./components/utils/FranchiseAutocomplete.vue')['default']
     FranchiseCard: typeof import('./components/utils/FranchiseCard.vue')['default']
+    FranchiseForm: typeof import('./components/franchises/FranchiseForm.vue')['default']
     FranchiseInfo: typeof import('./components/franchises/FranchiseInfo.vue')['default']
     HelloWorld: typeof import('./components/HelloWorld.vue')['default']
     ImageRender: typeof import('./components/utils/ImageRender.vue')['default']
@@ -22,6 +23,7 @@ declare module 'vue' {
     UpdateFranchiseForm: typeof import('./components/franchises/UpdateFranchiseForm.vue')['default']
     UpdateWaifuForm: typeof import('./components/waifus/UpdateWaifuForm.vue')['default']
     WaifuCard: typeof import('./components/utils/WaifuCard.vue')['default']
+    WaifuForm: typeof import('./components/waifus/WaifuForm.vue')['default']
     WaifuInfo: typeof import('./components/waifus/WaifuInfo.vue')['default']
     WaifuInfu: typeof import('./components/waifus/WaifuInfu.vue')['default']
   }

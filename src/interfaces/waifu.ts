@@ -12,8 +12,8 @@ export interface Waifu {
   age: number
   createdAt: Date
   updatedAt: Date
-  franchise?: Franchise
-  waifuType?: WaifuType
+  franchise: Franchise
+  waifuType: WaifuType
   waifuImages: WaifuImage[]
 }
 
