@@ -18,7 +18,7 @@
       />
     </div>
     <v-fab
-      v-if="sessionStore.token"
+      v-if="roleLevel() <= 2"
       absolute
       class="floating-button"
       color="secondary"
@@ -59,8 +59,8 @@
 <script lang="ts" setup>
   import router from '@/router'
   import { WaifuList } from '@/interfaces/waifu'
-  import { useSessionStore } from '@/stores/session'
   import api from '@/utils/axios.utils'
+  import roleLevel from '@/plugins/role_level'
 
   const waifus = ref([] as WaifuList[])
   const page = ref(parseInt(router.currentRoute.value.query.page?.toString() ?? '1'))
@@ -70,7 +70,6 @@
   const totalPages = ref(0)
   const loading = ref(false)
   const timeout = ref(null as any)
-  const sessionStore = useSessionStore()
 
   interface GetWaifus {
     page: number;

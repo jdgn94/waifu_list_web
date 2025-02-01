@@ -15,7 +15,7 @@
   <!-- Images -->
   <div class="d-flex align-center justify-center">
     <div class="image-container-franchise">
-      <v-icon class="image-icon" icon="mdi-image" />
+      <v-icon :class="currentTheme == 'dark' ? 'image-icon-dark' : 'image-icon-light'" icon="mdi-image" />
       <span
         v-ripple
         class="image-input"
@@ -52,8 +52,11 @@
   import { Franchise } from '@/interfaces/franchise'
   import router from '@/router'
   import api from '@/utils/axios.utils'
+  import { useTheme } from 'vuetify'
   import { VFileInput } from 'vuetify/components'
 
+  const theme = useTheme()
+  const currentTheme = theme.global.name
   const name = ref('')
   const nickname = ref('')
   const webPage = ref('')

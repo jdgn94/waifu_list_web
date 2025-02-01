@@ -12,7 +12,7 @@
       />
     </div>
     <v-fab
-      v-if="sessionStore.token"
+      v-if="roleLevel() <= 2"
       absolute
       class="floating-button"
       color="secondary"
@@ -68,8 +68,8 @@
 
 <script lang="ts" setup>
   import { Franchise } from '@/interfaces/franchise'
+  import roleLevel from '@/plugins/role_level'
   import router from '@/router'
-  import { useSessionStore } from '@/stores/session'
   import api from '@/utils/axios.utils'
 
   const page = ref(parseInt(router.currentRoute.value.query.page?.toString() ?? '1'))
@@ -78,7 +78,6 @@
   const totalPages = ref(0)
   const timeout = ref(null as any)
   const loading = ref(false)
-  const sessionStore = useSessionStore()
 
   onMounted(() => {
     getFranchises()
