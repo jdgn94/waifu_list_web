@@ -17,7 +17,7 @@
     <v-btn class="desktop-menu" to="/types">
       <span>Types</span>
     </v-btn>
-    <v-btn class="desktop-menu">
+    <v-btn class="desktop-menu" to="/rarities">
       <span>Rarity</span>
     </v-btn>
     <v-divider vertical />
@@ -54,7 +54,7 @@
         <v-list-item to="/types">
           <span>Types</span>
         </v-list-item>
-        <v-list-item>
+        <v-list-item to="/rarities">
           <span>Rarity</span>
         </v-list-item>
         <v-divider />

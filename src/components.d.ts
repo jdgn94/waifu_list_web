@@ -7,11 +7,13 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    AlertNotification: typeof import('./components/utils/AlertNotification.vue')['default']
     AppFooter: typeof import('./components/AppFooter.vue')['default']
     AppHeader: typeof import('./components/AppHeader.vue')['default']
     ButtonChangeTheme: typeof import('./components/utils/ButtonChangeTheme.vue')['default']
     CardLoading: typeof import('./components/utils/CardLoading.vue')['default']
     Dialog: typeof import('./components/types/dialog.vue')['default']
+    DialogRarities: typeof import('./components/rarities/DialogRarities.vue')['default']
     DialogWaifuType: typeof import('./components/types/DialogWaifuType.vue')['default']
     FranchiseAutocomplete: typeof import('./components/utils/FranchiseAutocomplete.vue')['default']
     FranchiseCard: typeof import('./components/utils/FranchiseCard.vue')['default']

@@ -1,23 +1,23 @@
 // Utilities
-import { defineStore } from "pinia";
+import { defineStore } from 'pinia'
 
 export interface UserInfo {
-  level: number;
-  exp: number;
-  limitExp: number;
-  coins: number;
-  diamonds: number;
-  goldenTickets: number;
-  favoritePages: number;
-  favoritePagePurchases: number;
-  loginDaily: boolean;
+  level: number
+  exp: number
+  limitExp: number
+  coins: number
+  diamonds: number
+  goldenTickets: number
+  favoritePages: number
+  favoritePagePurchases: number
+  loginDaily: boolean
 }
 
-export const useSessionStore = defineStore("session", {
+export const useSessionStore = defineStore('session', {
   state: () => ({
-    username: "",
-    nickname: "",
-    role: "",
+    username: '',
+    nickname: '',
+    role: '',
     userInfo: {
       level: 0,
       exp: 0,
@@ -33,28 +33,28 @@ export const useSessionStore = defineStore("session", {
   }),
 
   getters: {
-    get(state) {
-      return state;
+    get (state) {
+      return state
     },
   },
 
   actions: {
-    reset() {
-      this.$reset();
+    reset () {
+      this.$reset()
     },
 
-    create(
+    create (
       username: string,
       nickname: string,
       role: string,
       info: UserInfo,
       token: string
     ) {
-      this.username = username;
-      this.nickname = nickname;
-      this.role = role;
-      this.userInfo = info;
-      this.token = token;
+      this.username = username
+      this.nickname = nickname
+      this.role = role
+      this.userInfo = info
+      this.token = token
     },
   },
-});
+})

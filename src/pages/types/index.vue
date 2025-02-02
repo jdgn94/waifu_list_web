@@ -30,17 +30,17 @@
 
   const openDialog = ref(false)
   const dataToEdit = ref(undefined) as Ref<WaifuType | undefined>
-  const actions = ref([
+  const actions = [
     {
       icon: 'mdi-pencil',
       color: 'blue',
       title: 'Edit',
       onClick: (item: any) => editWaifuType(item),
     },
-  ]) as Ref<GridBoxActions[]>
-  const header: GridBoxHeader[] = [
+  ] as GridBoxActions[]
+  const header = [
     { id: 'name', title: 'Name' },
-  ]
+  ] as GridBoxHeader[]
   const types = ref([]) as Ref<WaifuType[]>
 
   onMounted(() => {
@@ -55,22 +55,15 @@
         name: type.name,
       }
     })
-
-    console.log(data)
   }
 
-  const editWaifuType = (waifuType: any) => {
-    console.log(waifuType)
+  const editWaifuType = (waifuType: WaifuType) => {
     dataToEdit.value = waifuType
-    setTimeout(() => {
-      openDialog.value = true
-    }, 300)
+    openDialog.value = true
   }
 
   const createWaifuType = () => {
     dataToEdit.value = undefined
-    setTimeout(() => {
-      openDialog.value = true
-    }, 300)
+    openDialog.value = true
   }
 </script>
