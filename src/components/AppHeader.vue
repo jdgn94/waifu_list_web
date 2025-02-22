@@ -18,7 +18,10 @@
       <span>Types</span>
     </v-btn>
     <v-btn class="desktop-menu" to="/rarities">
-      <span>Rarity</span>
+      <span>Rarities</span>
+    </v-btn>
+    <v-btn class="desktop-menu" to="/image_types">
+      <span>Image Types</span>
     </v-btn>
     <v-divider vertical />
     <!-- log in visible if token == null -->
@@ -55,7 +58,10 @@
           <span>Types</span>
         </v-list-item>
         <v-list-item to="/rarities">
-          <span>Rarity</span>
+          <span>Rarities</span>
+        </v-list-item>
+        <v-list-item to="/image_types">
+          <span>Image Types</span>
         </v-list-item>
         <v-divider />
         <v-list-item v-if="!token" @click="openDialog">

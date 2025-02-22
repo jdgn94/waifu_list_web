@@ -21,6 +21,7 @@
             :key="item.id + '-action-' + action.title"
           >
             <v-btn
+              v-if="action.hide ? !action.hide(item) : true"
               :color="action.color"
               icon
               size="small"

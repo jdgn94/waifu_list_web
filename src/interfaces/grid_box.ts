@@ -8,4 +8,5 @@ export interface GridBoxActions {
   color: string;
   title: string;
   onClick: (item: any) => void;
+  hide?: (item: any) => boolean;
 }
